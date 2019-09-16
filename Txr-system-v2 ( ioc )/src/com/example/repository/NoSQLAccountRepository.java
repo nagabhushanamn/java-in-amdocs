@@ -1,15 +1,17 @@
 package com.example.repository;
 
+
 import com.example.model.Account;
 
-public class SQLAccountRepository {
+public class NoSQLAccountRepository implements AccountRepository{
 
-	public SQLAccountRepository() {
-		System.out.println("SQLAccountRepository instance created..");
+
+	public NoSQLAccountRepository() {
+		System.out.println("NoSQLAccountRepository instance created..");
 	}
 
 	public Account loadAccount(String number) {
-		// ... jdbc / jpa
+		// ... odm
 		System.out.println("loading account " + number);
 		return new Account(number, 1000.00);
 	}

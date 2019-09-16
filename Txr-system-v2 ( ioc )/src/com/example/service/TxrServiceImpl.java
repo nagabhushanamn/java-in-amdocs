@@ -2,20 +2,23 @@ package com.example.service;
 
 
 import com.example.model.Account;
-import com.example.repository.SQLAccountRepository;
+import com.example.repository.AccountRepository;
 
-public class TxrServiceImpl {
+public class TxrServiceImpl implements TxrService {
 
 
-	public TxrServiceImpl() {
+	private AccountRepository accountRepository;
+
+	public TxrServiceImpl(AccountRepository accountRepository) {
+		this.accountRepository = accountRepository;
 		System.out.println("TxrServiceImpl instance created...");
 	}
 
+	@Override
 	public boolean transfer(double amount, String fromAccNumber, String toAccNumber) {
 
 		System.out.println("txr initiated...");
 
-		SQLAccountRepository accountRepository = new SQLAccountRepository();
 		Account fromAccount = accountRepository.loadAccount(fromAccNumber);
 		Account toAccount = accountRepository.loadAccount(toAccNumber);
 
