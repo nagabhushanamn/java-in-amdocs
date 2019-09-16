@@ -1,0 +1,197 @@
+
+Txr-system
+---------------
+
+a. data/model
+
+    - Customer
+    - Account
+    - Txn
+
+b. layer (s)
+
+    1. dao/repository layer  ==> persisting logic
+
+        - AccountRepository
+
+    2. business/service layer ==> processing logic
+
+        - TxrService
+
+    3. web-layer              ==> req & response logic
+
+        - TxrController
+                
+--------------------------------------------------    
+
+
+design & performance issues
+----------------------------
+
+=> tight-coupling b/w dependent & dependency
+    -> can't extend with new features easily
+=> duplicate dependency instances created & discarded
+    -> slow, memory/resource use high
+=> unit-testing is not possible
+    -> dev/bug-fix slow
+
+reason for these issues ?
+
+=> dependent creating it's own dependency
+
+solution:
+
+=> don't create , get from factory
+
+limitation on factory-lookup:
+
+=> factory location tight coupling
+
+best solution:
+
+=> don't create/lookup , get/inject by 'third-party'  ( Inversion of Control ( ioc ))
+
+
+how to implement IOC ?
+
+many ways
+
+way-1 : dependency injection
+
+        - constructor
+        - setter
+
+way-2 : AOP
+
+-------------------------------------------------
+java ==> OOP
+-------------------------------------------------
+
+-------------------------------------------------
+OO concepts
+-------------------------------------------------
+
+    - Abstraction
+    - Encapsulation
+    - Inheritance
+    - Polymorphism
+
+
+-------------------------------------------------
+OO principles
+-------------------------------------------------    
+
+    - Single-Responsibility
+    - Open for extension , closed for modification
+    - Liskov, substitution
+    - Interface segregation
+    - Dependency Inversion
+
+
+
+-------------------------------------------------
+OO patterns
+-------------------------------------------------   
+
+    - creational
+    - structural
+    - behavioral
+
+------------------------------------------------    
+
+java programming style
+
+    => component & container style
+
+     component ==> business logic
+     container  ==> infra logic
+
+    i.e java application  ==> component(s) + container
+
+
+1. Java SE
+
+    - application         ==> JRE ( java runtime environment )
+    - applet              ==> browse-with-JRE
+
+2. Java EE
+
+    - web components (servlet & JSP )    ==> web-container + JRE  ( e.g Tomcat, jetty, ...)
+    - EJB components ( session,entity & mdb) => ejb-container + JRE ( e.g every JEE-server contains this box )
+
+
+
+JEE server aka Application-server  = web-container + ejb-container 
+
+    e.g
+
+        - glassfish
+        - jboss
+        - weblogic
+        - websphere
+
+--------------------------------------------------------------------------- 
+
+
+------------------------------------------------------------------------
+process  vs thread
+------------------------------------------------------------------------
+
+ process
+
+    => one whole execution in os
+    => owns separate memory
+
+ thread
+
+    => light-weight process in whole-process  
+    => multiple threads can share same process-memory 
+
+------------------------------------------------------------------------
+
+how many threads i can create ?
+
+----------
+formula
+----------
+
+
+                        # of cpus  e.g 8-core
+# of threads      <=   -------------------------
+                        blocking-factor
+
+
+
+blocking-factor   =   0   < blocking-factor  < 1
+
+------------------------------------------------------------------------    
+
+
+thread-pools
+
+    => try to re-use existing threads, instead creating on demand
+
+
+------------------------------------------------------------------------
+
+
+java language core concepts
+
+    => OOP
+    => data structures / collections
+    => concurrency
+
+-------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+

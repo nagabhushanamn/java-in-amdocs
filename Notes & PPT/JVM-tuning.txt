@@ -1,0 +1,324 @@
+
+-----------------------------------------------------------------------------------------
+Introduction
+-----------------------------------------------------------------------------------------
+✔ Oracle HotSpot  ( our focus )
+
+✔ JVM Tuning Flags
+
+    - JVM accepts two kinds of flags: 
+      boolean flags, and flags that require a parameter.
+
+       ✔ Boolean flags use this syntax: 
+      
+       -XX:+FlagName enables the flag, and -XX:-FlagName disables the flag.
+
+       ✔ Flags that require a parameter use this syntax: 
+       
+       -XX:FlagName=something
+
+
+
+-----------------------------------------------------------------------------------------
+The Complete Performance Story
+-----------------------------------------------------------------------------------------
+
+   ✔ Write Better Algorithms
+        - A good algorithm is the most important thing when it comes to fast performance.
+
+    ✔ Write Less Code
+        - small well-written program will run faster than a large well-written program.
+
+    ✔ Oh Go Ahead, Prematurely Optimize
+
+        eg.
+
+        #1
+        log.log(Level.FINE, "I am here, and the value of X is " + calcX() + " and Y is " + calcY());    
+
+        #2
+        if (log.isLoggable(Level.FINE)) { 
+            log.log(Level.FINE,"I am here, and the value of X is {} and Y is {}", new Object[]{calcX(), calcY()});
+        }
+
+
+    ✔ Look Elsewhere: The Database Is Always the Bottleneck
+
+
+-----------------------------------------------------------------------------------------
+An Approach to Performance Testing
+-----------------------------------------------------------------------------------------
+
+
+ ✔ Test a Real Application
+ ✔ Understand Throughput, Batching, and Response Time
+ ✔ Understand Variability
+ ✔ Test Early, Test Often
+
+
+-----------------------------------------------------------------------------------------
+A Java Performance Toolbox
+-----------------------------------------------------------------------------------------
+
+
+ - Performance analysis is all about visibility
+ - Visibility is all about tools. And so performance tuning is all about tools.
+
+
+
+Operating System Tools and Analysis
+-----------------------------------
+
+✔ CPU Usage
+
+    1. CPU time is the first thing 
+       to examine when looking at performance of an application.
+    2. The goal in optimizing code is to drive the CPU usage up (for a shorter period of time),
+       not down.
+    3. Understand why CPU usage is low before diving in and attempting to tune an application.
+
+
+✔ Disk Usage
+
+    1. Monitoring disk usage is important for all applications.
+       For applications that don’t directly write to disk,
+       system swapping can still affect their performance.
+
+    2. Applications that write to disk can be bottlenecked both
+       because they are writing data inefficiently (too little throughput)
+       or because they are writing too much data (too much throughput).
+    
+
+✔ Network Usage
+
+    1. For network-based applications,
+       make sure to monitor the network to make sure it hasn’t become a bottleneck.
+    2. Applications that write to the network can be bottlenecked both
+       because they are writing data inefficiently (too little through‐ put)
+       or because they are writing too much data (too much throughput).
+
+
+
+Java Monitoring Tools
+-----------------------------------
+
+
+    To gain insight into the JVM itself, 
+    Java monitoring tools are required. 
+
+    A number of tools come with the JDK:
+
+
+
+✔ jcmd   
+
+    - Prints basic class, thread, and VM information for a Java process.
+
+
+✔ jconsole
+
+    - Provides a graphical view of JVM activities,
+      including thread usage, class usage, and GC activities.
+
+✔ jhat
+
+    - Reads and helps analyze memory heap dumps.
+      This is a postprocessing utility.
+
+✔ jmap
+
+    - Provides heap dumps and other information about JVM memory usage.Suitable for scripting.
+
+✔ jinfo
+
+    - Provides visibility into the system properties of the JVM,
+      and allows some system properties to be set dynamically. Suitable for scripting.
+
+✔ jstack
+    
+    - Dumps the stacks of a Java process. Suitable for scripting.
+
+✔ jstat
+    
+    - Provides information about GC and class-loading activities. Suitable for scripting.
+
+✔ jvisualvm
+    
+    - A GUI tool to monitor a JVM, profile a running application, and analyze JVM heap dumps
+
+
+
+These tools fits into these broad areas:
+
+    • Basic VM information
+    • Thread information
+    • Class information
+    • Live GC analysis
+    • Heap dump postprocessing
+    • Profiling a JVM
+
+
+
+Basic VM Information
+---------------------
+
+
+✔ Uptime
+
+  % jcmd process_id VM.uptime
+
+✔ System properties
+
+  % jcmd process_id VM.system_properties
+  or
+  % jinfo -sysprops process_id  
+
+✔ JVM version
+
+  % jcmd process_id VM.version
+
+✔ JVM command line
+
+  % jcmd process_id VM.command_line
+
+✔ JVM tuning flags
+
+  % jcmd process_id VM.flags [-all]  
+
+  % java other_options -XX:+PrintFlagsFinal -version  
+
+  % jinfo -flags process_id
+
+  % jinfo -flag PrintGCDetails process_id
+
+  % jinfo -flag -PrintGCDetails process_id  
+
+summary:
+
+    1. jcmd can be used to find the basic JVM information—includ‐ ing the value of all the tuning flags—for a running application.
+    2. Default flag values can be found by including -XX:+PrintFlags Final on a command line. This is useful for determining the default ergonomic settings of flags on a particular platform.
+    3. jinfo is useful for inspecting (and in some cases changing) in‐ dividual flags.
+
+
+
+
+✔ Thread Information
+
+  % jstack process_id
+
+  % jcmd process_id Thread.print
+
+✔ Class Information  
+
+✔ Live GC Analysis
+
+✔ Heap Dump Postprocessing
+
+
+
+✔ Profiling Tools
+
+
+
+summary:
+
+    - No tool is perfect, and competing tools have relative strengths.
+    - Command-line monitoring tools can gather important data automatically
+    - Tools rapidly evolve
+
+
+
+
+-----------------------------------------------------------------------------------------
+Working with the JIT Compiler
+-----------------------------------------------------------------------------------------
+
+- The just-in-time (JIT) compiler is the heart of the Java Virtual Machine
+
+✔ An Overview
+
+    - CPU + assembly or binary code
+    - compiled language    ( C++ & Fortran )
+    - interpreted language ( PHP & Perl )
+
+- Programs written in interpreted languages are portable but it might run slowly
+
+- interpreted code will almost always be measurably slower than compiled code
+
+- compilers have enough information about the program to provide a number of optimizations
+  to the binary code that an interpreter simply cannot perform
+
+
+
+✔ Hot Spot Compilation
+
+    - small subset of code is executed frequently => Hot Spot
+
+    e.g equals()
+
+
+
+✔ Basic Tunings: Client or Server (or Both)
+
+
+    e.g., either -client or -server or -XX:+TieredCompilation
+
+    1. The client compiler is most useful when the startup of an application is the overriding performance concern.
+    2. Tiered compilation can achieve startup times very close to those obtained from the client compiler.
+
+    3. For long-running applications, always choose the server compiler,
+       preferably in conjunction with tiered compilation.
+
+
+✔ Determining the Default Compiler
+
+
+    % java -version
+
+    1. Different Java binaries support different compilers.
+    2. The compilers supported by different binaries are inconsistent among operating systems
+       and binary architectures.
+    3. A program doesn’t necessarily use the compiler specified
+       depending on the platform support for that compiler.
+
+
+
+✔ Code Cache
+
+    When the code cache fills up, the JVM will (usually) spit out a warning to that effect:
+
+        Java HotSpot(TM) 64-Bit Server VM warning: CodeCache is full.
+                Compiler has been disabled.
+        Java HotSpot(TM) 64-Bit Server VM warning: Try increasing the
+                code cache size using -XX:ReservedCodeCacheSize=
+
+    1. The code cache is a resource with a defined maximum size
+       that affects the total amount of compiled code the JVM can run.
+    2. Tiered compilation can easily use up the entire code cache
+       in its default configuration (particularly in Java 7); monitor the code cache
+       and increase its size if necessary when using tiered compilation.
+
+
+
+✔ Compilation Thresholds
+
+    1. Compilation occurs when the number of times a method
+       or loop has been executed reaches a certain threshold.
+    2. Changing the threshold values can cause the code
+       to be compiled sooner than it otherwise would.
+    3. “Lukewarm” methods will never reach the compilation threshold
+     (particularly for the server compiler) since the counters decay over time.
+
+    -XX:CompileThreshold=N 
+
+
+✔  Inspecting the Compilation Process    
+
+
+    -XX:+PrintCompilation (which by default is false).
+
+
+
+    
+-----------------------------------------------------------------------------------------
+
