@@ -1,0 +1,126 @@
+
+-------------------------------------------------------
+Garbage Collection
+-------------------------------------------------------
+
+
+-  most important thing that can be done 
+   to improve the performance of a Java application.
+
+
+There are four main garbage collectors available in current JVMs:
+
+    the serial collector (used for single-CPU machines), 
+    the throughput (parallel) collector, 
+    the concurrent (CMS) collector, 
+    and the G1 collector. 
+
+
+
+Garbage Collection Overview
+---------------------------
+
+    - finding unused objects, making their memory available, and compacting the heap
+    - stop-the-world pauses
+    - minimizing those pauses is the key consideration when tuning GC
+
+
+
+Generational Garbage Collectors
+-------------------------------
+
+    - old (or tenured) generation, and the young generation. 
+
+    - minor GC
+
+    - All GC algorithms have stop-the-world pauses during collection of the young generation.
+
+    - full GC, and it generally causes a long pause for the application threads.
+
+    - CMS and G1 are called concurrent collectors / low-pause (and sometimes—incorrectly—pauseless) collectors
+
+
+
+    • The individual requests will be impacted by pause times—and more importantly
+      by long pause times for full GCs.
+      If minimizing the effect of pauses on response times is the goal,
+      a concurrent collector will be more appropriate.
+
+    • If the average response time is more important than the outliers
+     (i.e., the 90th% response time),
+      the throughput collector will usually yield better results.
+    • The benefit of avoiding long pause times with a concurrent collector
+      comes at the expense of extra CPU usage.
+
+
+    • If enough CPU is available, using the concurrent collector
+      to avoid full GC pauses will allow the job to finish faster.
+    • If CPU is limited, then the extra CPU consumption of the concurrent collector
+      will cause the batch job to take more time.  
+
+
+    Quick Summary
+    1. All GC algorithms divide the heap into old and young generations.
+    2. All GC algorithms employ a stop-the-world approach
+       to clearing objects from the young generation,
+       which is usually a very quick operation.
+
+
+
+GC Algorithms
+-------------
+
+The JVM provides four different algorithms for performing GC.
+
+
+ a. The serial garbage collector
+
+     This is the default collector if the application is running
+     on a client-class machine (32-bit JVMs on Windows or single- processor machines).
+
+    - The serial collector uses a single thread to process the heap.
+    - It will stop all application threads as the heap is processed(for either a minor or full GC)
+    - During a full GC, it will fully compact the old generation.
+
+    - The serial collector is enabled by using the -XX:+UseSerialGC flag
+
+
+ b. The throughput collector
+
+    This is the default collector for server-class machines (multi-CPU Unix machines, 
+    and any 64-bit JVM).   
+
+    - The throughput collector uses multiple threads to collect the young generation & old generation as well
+    - The throughput collector is often called the parallel collector.
+    - The throughput collector stops all application threads during both minor and full GCs,
+    - fully compacts the old generation during a full GC
+
+    - To enable it where necessary, use the flags -XX:+UseParallelGC -XX:+UseParallelOldGC.
+
+
+ c. The CMS collector
+
+     - The CMS collector is designed to eliminate the long pauses associated with the full GC cycles 
+     - The CMS stops all application threads during a minor GC, which it also performs with multiple threads.
+     - Instead of stopping the application threads during a full GC, 
+       CMS uses one or more background threads to periodically scan through the old generation and discard unused objects. 
+     - CMS a low-pause collector: 
+     - application threads are only paused during minor collections
+
+
+     CMS is enabled by specifying the flags -XX:+UseConcMarkSweepGC -XX:+UseParNewGC
+
+ d. The G1 collector  
+
+    - The G1 (or Garbage First) collector is designed to process large heaps
+     (greater than about 4 GB) with minimal pauses. 
+
+     
+
+
+Choosing a GC Algorithm
+-----------------------
+
+The serial collector is best used only in those cases
+where the the application uses less than 100 MB.
+
