@@ -15,7 +15,7 @@
 		<div class="col-sm-6 col-md-6">
 			<div class="card card-body">
 				<div class="alert alert-warning">
-				Txr success
+					${message}
 				</div>
 			</div>
 		</div>

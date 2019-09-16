@@ -8,13 +8,11 @@ import java.sql.SQLException;
 public class MySQLConnectionFactory {
 
 	static {
-
 		try {
 			Class.forName("org.gjt.mm.mysql.Driver");
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	public static Connection getConnection() throws SQLException {

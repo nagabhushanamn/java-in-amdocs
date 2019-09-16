@@ -14,7 +14,7 @@ import com.example.repository.SQLAccountRepository;
 import com.example.service.TxrService;
 import com.example.service.TxrServiceImpl;
 
-@WebServlet(urlPatterns = {"/txr"})
+@WebServlet(urlPatterns = { "/txr" })
 public class TxrController extends HttpServlet {
 
 	private TxrService txrService;
@@ -32,7 +32,12 @@ public class TxrController extends HttpServlet {
 		String fromAccNumber = req.getParameter("fromAccNumber");
 		String toAccNumber = req.getParameter("toAccNumber");
 
-		txrService.transfer(amount, fromAccNumber, toAccNumber);
+		try {
+			boolean b = txrService.transfer(amount, fromAccNumber, toAccNumber);
+			req.setAttribute("message", b ? "txr success" : "txr failed");
+		} catch (Exception e) {
+			req.setAttribute("message", e.getMessage());
+		}
 
 		req.getRequestDispatcher("txr-status.jsp").forward(req, resp);
 
