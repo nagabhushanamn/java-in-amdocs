@@ -3,7 +3,7 @@ package com.example;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
+//import java.util.Optional; //  JDK 1.8
 import java.util.UUID;
 
 class TxrRequest {
@@ -70,13 +70,13 @@ class TxrRequestQueue {
 		}
 	}
 
-	public Optional<TxrRequest> getNextTxrRequest() {
+	public TxrRequest getNextTxrRequest() {
 
 		if (lastProcessedId + 1 > nextAvaialbleId) {
 			lastProcessedId++;
-			return Optional.of(requests.remove(lastProcessedId));
+			return requests.remove(lastProcessedId);
 		} else
-			return Optional.empty();
+			return null;
 
 //		if (requests.size() > 0) {
 //			synchronized (requests) {
@@ -134,8 +134,8 @@ class ProcessTxrRequest implements Runnable {
 	public void run() {
 		while (true) {
 
-			Optional<TxrRequest> request = txrRequestQueue.getNextTxrRequest();
-			if (!request.isPresent()) {
+			TxrRequest request = txrRequestQueue.getNextTxrRequest();
+			if (request!=null) {
 				// no customers in queue so pause for half a second
 				try {
 					Thread.sleep(50);
