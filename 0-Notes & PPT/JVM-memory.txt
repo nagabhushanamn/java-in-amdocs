@@ -7,7 +7,6 @@
     - heap  => objects
     - perm-gen/method-area ( java 7 ) / meta-space ( java 8)  => static variables
 
-
  ✔ java.lang.OutOfMemoryError : PermGen
 
     -XX:PermSize=N
@@ -24,11 +23,10 @@ Internal JVM memory optimization
 
  - Ex1.java
 
- ✔ string constant pool ( scp )
+ ✔ string constant pool ( scp ) / sting table / hash-table data structure
  ✔ interning string  
     
     - since java-7 , string pool lives in Heap.
-
 
 ------------------------------------------------------------------------------------------
 Tuning the JVM 's memory settings
@@ -41,7 +39,6 @@ Tuning the JVM 's memory settings
     - string pool implemented using HashMap data-structure 
 
     > java -XX:+PrintStringTableStatistics com.example.Ex2
-
 
  ✔ Tuning the size of the string pool
 
@@ -78,7 +75,6 @@ Tuning the JVM 's memory settings
 ------------------------------------------------------------------------------------------
 Introduction to Garbage Collection
 ------------------------------------------------------------------------------------------
-
  - Ex3.java
 
 ✔ What it means when we say Java is a managed language
@@ -91,21 +87,19 @@ Introduction to Garbage Collection
     - unreachable objects on heap
 
  i.e 
-        Any object on the heap which cannot be reached through a reference from the stack
-        is 'eligible for garbage collection'
+        Any object on the heap which cannot be reached 
+        through a reference from the stack is 'eligible for garbage collection'
 
 
 ✔ The System.gc() method
 
     - https://docs.oracle.com/javase/7/docs/api/java/lang/System.html#gc()
 
-
 ✔ Why it's not a good idea to run the System.gc() method
 
 ✔ The finalize() method
 
 ✔ The danger of using finalize()
-
 
 
 
@@ -119,9 +113,7 @@ Monitoring the Heap
 
 ✔ Soft Leaks - when an object remains referenced when no longer needed
 
-
 Ex4.java
-
 
  > java -Xmx10m com.example.Ex4
 

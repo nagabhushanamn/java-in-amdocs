@@ -9,14 +9,16 @@ public class Ex3 {
 
 	public static void main(String[] args) throws InterruptedException {
 
-		Runtime runtime = Runtime.getRuntime();
+		Runtime runtime = Runtime.getRuntime(); // JRE -> JVM
 
 		long availableBytes = runtime.freeMemory();
 		System.out.println("Available memory at start: " + availableBytes / 1024 + "k");
 
 		// let's create lots of objects
 		List<Account> accounts = new ArrayList<Account>();
-		for (int i = 0; i < 1000000; i++) {
+
+		for (int i = 0; i < 1000; i++) {
+//			Account account=new Account(String.valueOf(i), 1000.00);
 			accounts.add(new Account(String.valueOf(i), 1000.00));
 		}
 

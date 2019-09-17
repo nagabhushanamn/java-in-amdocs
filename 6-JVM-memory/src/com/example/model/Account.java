@@ -38,6 +38,8 @@ public class Account {
 //	@Override
 //	protected void finalize() throws Throwable {
 //		System.out.println("this object is beaing g.c.'d " + this.number);
+//		while (true) {
+//		}
 //	}
 
 }
