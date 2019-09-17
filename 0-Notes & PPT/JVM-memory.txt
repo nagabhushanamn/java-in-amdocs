@@ -45,15 +45,16 @@ Tuning the JVM 's memory settings
 
  ✔ Tuning the size of the string pool
 
-    > java -XX:+PrintStringTableStatistics -XX:StringTableSize=120121 com.examples.Ex2
+    > java -XX:+PrintStringTableStatistics -XX:StringTableSize=120121 com.example.Ex2
   
  ✔ Tuning the size of the heap
 
     > java -XX:+UnlockDiagnosticVMOptions -XX:+PrintFlagsFinal
 
-    > java -XX:MaxHeapSize=600m -XX:+PrintStringTableStatistics -XX:StringTableSize=120121 com.examples.Ex2
+    > java -XX:MaxHeapSize=600m -XX:+PrintStringTableStatistics -XX:StringTableSize=120121 com.example.Ex2
 
-    > java -XX:InitialHeapSize=1g -XX:+PrintStringTableStatistics -XX:StringTableSize=120121 com.examples.Ex2
+    > java -XX:InitialHeapSize=1g -XX:+PrintStringTableStatistics -XX:StringTableSize=120121 com.example.Ex2
+
 
 
 ✔ Shortcut syntax for heap tuning flags
@@ -70,7 +71,7 @@ Tuning the JVM 's memory settings
 
         e.g
 
-        java -Xms1g -Xmx2g -XX:+PrintStringTableStatistics -XX:StringTableSize=120121 com.examples.Ex2
+        java -Xms1g -Xmx2g -XX:+PrintStringTableStatistics -XX:StringTableSize=120121 com.example.Ex2
 
 
 
@@ -87,7 +88,6 @@ Introduction to Garbage Collection
 
 
 ✔ How Java knows which objects can be removed from the Heap
-
     - unreachable objects on heap
 
  i.e 
@@ -101,7 +101,6 @@ Introduction to Garbage Collection
 
 
 ✔ Why it's not a good idea to run the System.gc() method
-
 
 ✔ The finalize() method
 
@@ -120,18 +119,17 @@ Monitoring the Heap
 
 ✔ Soft Leaks - when an object remains referenced when no longer needed
 
+
 Ex4.java
 
 
- > java -Xmx10m com.examples.Ex4
-
-
+ > java -Xmx10m com.example.Ex4
 
 ✔ Introducing (J)VisualVM
 
 ✔ Monitoring the size of the heap over time
 
-    > java -Xmx50m com.examples.Ex4
+    > java -Xmx50m com.example.Ex4
 
 ✔ Fixing the problem and checking the heap size    
 
@@ -155,21 +153,20 @@ Analyzing a heap dump
 
 
 
+
 ------------------------------------------------------------------------------------------
 garbage collection    
 ------------------------------------------------------------------------------------------
+Idealized GC heap during collection
 
 ✔ The "Mark and Sweep" process
 
 ✔ "Stop-the-world"
 
         - Stop-the-world means that the JVM is stopping the application from running to execute a GC.
-
         - GC tuning often means reducing this stop-the-world time.
 
-
 ✔ Generational garbage collection
-
 
     This garbage collector was created based on the following two hypotheses.
 
@@ -178,19 +175,19 @@ garbage collection
         i.e if an object survives it is likely to live forever
 
 
+
      ✔ Heap in HotSpot VM.
-    
-    - young generation -- "minor GC" 
-    - old generation   -- "major GC" (or a "full GC")
-
-
-
+        
+        - young generation -- "minor GC" 
+        - old generation   -- "major GC" (or a "full GC")
 
     ✔ young generation
 
         - Eden
         - s0
         - s1
+
+
 
     ✔ Viewing the generations in VisualVM    
 
@@ -200,9 +197,6 @@ garbage collection
     ✔ Viewing the heap when there's a soft-leak
     
 
-
-
-
 ------------------------------------------------------------------------------------------
 garbage collection  tuning & selection  
 ------------------------------------------------------------------------------------------
@@ -211,12 +205,9 @@ Ex5.java
  
 ✔ Monitoring garbage collection
 
-
-    > java -Xmx20m -verbose:gc com.examples.Ex5
-
+    > java -Xmx20m -verbose:gc com.example.Ex5
 
 ✔ Turning off automated heap allocation sizing    
-
 
     -XX:-UseAdaptiveSizePolicy
 
@@ -228,12 +219,11 @@ Ex5.java
 
 ✔ Tuning garbage collection - old and young allocation    
 
-
     -XXNewRatio=n
 
     > jinfo -flag NewRatio <pid>
 
-    > java -Xmx20m -XXNewRatio=1 com.examples.Ex5
+    > java -Xmx20m -XX:NewRatio=1 com.examples.Ex5
 
 ✔ Tuning garbage collection - survivor space allocation
 
@@ -241,22 +231,16 @@ Ex5.java
 
     > jinfo -flag SurvivorRatio <pid>
 
-    > java -Xmx20m -XX:NewRatio=1 XX:SurvivorRatio=5 com.examples.Ex5
-
+    > java -Xmx20m -XX:NewRatio=1 XX:SurvivorRatio=5 com.example.Ex5
 
 ✔ Tuning garbage collection - generations needed to become old
 
-
     -XX:MaxTenuringThreshold=n
-
 
     > jinfo -flag MaxTenuringThreshold <pid>
 
 
-
-
 ✔ choosing garbage collector
-
 
     According to JDK 7, there are GC types. 
         
@@ -282,6 +266,7 @@ Ex5.java
 
             > java -XX:+UseParallelGC -jar Application.java
 
+
         3. Concurrent Mark & Sweep GC  (or "CMS") => -XX:+UseConcMarkSweepGC
 
             - applications using this type of GC respond slower on average
@@ -294,5 +279,35 @@ Ex5.java
              > java -XX:+UseG1GC -jar Application.java
 
 
+             -XX:ConcGCThreads=N
+             -XX:InitiatingHeapOccupancyPercent   
 
+
+✔ Sting de-duplication
+
+    -XX:UseStringDeDuplication ( only available if using G1)
+
+---------------------------------------------------------------------------------
+
+JVM-gc-tuning.pdf
+
+
+
+
+To diagnose any memory problems, the Garbage Collection log file is the best place to start. It provides several interesting statistics:
+
+When the scavenge (or Young generation) GC ran?
+When the full GC ran?
+How many scavenge GCs and Full GCs ran? Did they run repeatedly? In what interval?
+After the GC process ran, how much memory was reclaimed in Young, Old, and Permanent/Metaspace generations?
+How long did the GC run?
+How long did JVM pause when Full GC run?
+What was the total allocated memory in each generation?
+How many objects were promoted to old generation?
+
+
+How to Generate GC Log File?
+
+
+-XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xloggc:<file-path>
 

@@ -40,7 +40,6 @@ Generational Garbage Collectors
     - CMS and G1 are called concurrent collectors / low-pause (and sometimes—incorrectly—pauseless) collectors
 
 
-
     • The individual requests will be impacted by pause times—and more importantly
       by long pause times for full GCs.
       If minimizing the effect of pauses on response times is the goal,
@@ -71,7 +70,6 @@ GC Algorithms
 -------------
 
 The JVM provides four different algorithms for performing GC.
-
 
  a. The serial garbage collector
 
