@@ -1,0 +1,222 @@
+
+
+Using jps
+-------------------------
+
+
+> jps
+> jps -l  
+> jps -m
+> jps -v
+> jps -q
+> jps -help
+
+
+
+Using the jcmd Command
+--------------------------
+
+> jcmd | jps -m
+> jcmd -l
+> jcmd <pid> help
+  
+  information about the VM or the garbage collector (GC) 
+  can be queried and the results returned to the command prompt window.
+
+> jcmd <pid> VM.version
+> jcmd <pid> VM.system_properties
+> jcmd <pid> VM.flags
+> jcmd <pid> VM.uptime
+> jcmd <pid> GC.class_histogram > temp.txt
+> jcmd <pid> PerfCounter.print
+
+
+
+
+Using the jstat Utility
+--------------------------
+
+
+    > jcmd
+    > jstat -gcutil <pid> 5000
+
+
+    S0: Survivor space 0 utilization as a percentage of the space's current capacity
+    S1: Survivor space 1 utilization as a percentage of the space's current capacity
+    E: Eden space utilization as a percentage of the space's current capacity
+    O: Old space utilization as a percentage of the space's current capacity
+    P: Permanent space utilization as a percentage of the space's current capacity
+    YGC: Number of young generation GC events
+    YGCT: Young generation garbage collection time
+    FGC: Number of full GC events
+    FGCT: Full garbage collection time
+    GCT: Total garbage collection time
+
+
+    > jstat -gcutil <pid>@remotehost 5000
+
+
+
+
+
+
+using jmap - Memory Map
+-----------------------
+
+jmap [ option ] pid
+jmap [ option ] executable core
+jmap [ option ] [server-id@]remote-hostname-or-IP
+
+> jmap -dump:live,format=b,file=tx.hpof  33594
+
+https://docs.oracle.com/javase/7/docs/technotes/tools/share/jmap.html
+
+
+
+HOW TO CAPTURE HEAP DUMP? – JMAP, –XX:+HEAPDUMPONOUTOFMEMORYERROR
+
+
+Heap dump is a snapshot of the Java memory. 
+It contains information about the Java objects 
+and classes in the heap at the moment the snapshot is triggered.
+
+It’s vital artifact to diagnose any Java memory related problems.
+
+Heap dumps can be captured using several mechanisms.
+
+way-1
+--------
+
+ - Identify the Process Id
+
+    > jps
+
+ - Capture Heap Dump – jmap
+
+    > jmap -dump:live,file=<file-path> <pid>
+
+    e.g
+
+    jmap -dump:live,file=/opt/tmp/AddressBook-heapdump.bin 37320
+
+
+way-2
+-------
+
+    Capture Heap Dump – HeapDumpOnOutOfMemoryError
+
+
+    -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/logs/heapdump
+
+
+
+
+
+using Java Heap Analysis Tool ( jhat )
+--------------------------------------
+
+
+JHAT – HEAP DUMP ANALYSIS
+
+
+https://docs.oracle.com/javase/7/docs/technotes/tools/share/jhat.html
+
+
+How to start jhat?
+
+jhat -J-Xmx -port  
+where
+memory-size: JVM argument. memory size with which JVM needs to be launched
+port-number: Port in which jhat web application can be accessed 
+file-path: Location of Heap dump file
+
+
+jhat -J-Xmx2g -port 7001 /opt/workspace/tier1app/artifacts/LeakingMap/heapDump-2.bin
+
+
+Web Access – jhat
+
+ http://localhost:7001
+
+
+
+
+
+
+Java Monitoring Utilities
+-------------------------
+
+    Java VisualVM (jvisualvm.exe)
+    JConsole (jconsole.exe)
+    Java Mission Control (jmc.exe)
+    Diagnostic Command Tool (jcmd.exe)
+
+
+
+using JFR
+---------
+
+ -> collects information about the events in a Java Virtual Machine (JVM)
+    during the execution of a Java application
+
+
+    JFR is designed to affect the performance of a running application as little as possible.
+
+    In order to use JFR, we should activate it. We may achieve this in two ways:
+
+    when starting a Java application
+    passing diagnostic commands of the jcmd tool when a Java application is already running
+
+
+    JFR doesn't have a standalone tool. 
+    We use Java Mission Control (JMC), 
+    which contains a plugin that allows us to visualize the data collected by JFR.
+
+
+    These three components — JFR, jcmd and JMC — 
+    form a complete suite for collecting low-level runtime information of a running Java program
+
+
+    We may find this information very useful when optimizing our program, 
+    or when diagnosing it when something goes wrong.
+
+    JFR has two main concepts: events and dataflow.
+
+    Events:
+
+    There are three types of events that JFR collects:
+
+        an instant event is logged immediately once it occurs
+        a duration event is logged if its duration succeeds a specified threshold
+        a sample event is used to sample the system activity
+    
+    Dataflow:
+
+    JFR saves data about the events in a single output file, flight.jfr
+
+
+
+How to Use Java Flight Recorder:
+
+
+    For JDK 8, to be able to activate JFR, 
+    we should start the JVM with the options +UnlockCommercialFeatures and +FlightRecorder.
+
+    way1: Command Line
+
+    > java -XX:+UnlockCommercialFeatures -XX:+FlightRecorder -XX:StartFlightRecording=duration=200s,filename=flight.jfr path-to-class-file
+
+    way-2: Diagnostic Command Tool
+
+    https://docs.oracle.com/javacomponents/jmc-5-4/jfr-runtime-guide/comline.htm#JFRUH190
+
+
+
+
+Java Flight Recorder in Action
+
+    > java -XX:+UnlockCommercialFeatures -XX:+FlightRecorder -XX:StartFlightRecording=duration=200s,filename=flight.jfr com.example.Ex4
+
+
+
+

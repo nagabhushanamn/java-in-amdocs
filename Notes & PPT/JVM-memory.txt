@@ -116,7 +116,7 @@ Monitoring the Heap
 Ex4.java
 
  > java -Xmx10m com.example.Ex4
-
+ 
 ✔ Introducing (J)VisualVM
 
 ✔ Monitoring the size of the heap over time
@@ -143,19 +143,18 @@ Analyzing a heap dump
 ✔ Viewing Heap Dump    
 
 
-
-
-
 ------------------------------------------------------------------------------------------
 garbage collection    
 ------------------------------------------------------------------------------------------
-Idealized GC heap during collection
 
-✔ The "Mark and Sweep" process
 
-✔ "Stop-the-world"
+✔ The "Mark and Sweep" process with compact
 
-        - Stop-the-world means that the JVM is stopping the application from running to execute a GC.
+
+✔ "Stop-the-world" pause
+
+        - Stop-the-world means that the JVM is stopping the application
+          from running to execute a GC.
         - GC tuning often means reducing this stop-the-world time.
 
 ✔ Generational garbage collection
@@ -180,7 +179,6 @@ Idealized GC heap during collection
         - s1
 
 
-
     ✔ Viewing the generations in VisualVM    
 
         - install Visual GC plugin
@@ -190,7 +188,7 @@ Idealized GC heap during collection
     
 
 ------------------------------------------------------------------------------------------
-garbage collection  tuning & selection  
+garbage collection tuning & selection  
 ------------------------------------------------------------------------------------------
 
 Ex5.java
@@ -198,6 +196,7 @@ Ex5.java
 ✔ Monitoring garbage collection
 
     > java -Xmx20m -verbose:gc com.example.Ex5
+
 
 ✔ Turning off automated heap allocation sizing    
 
@@ -232,6 +231,10 @@ Ex5.java
     > jinfo -flag MaxTenuringThreshold <pid>
 
 
+--------------------------------------------------------------
+
+
+
 ✔ choosing garbage collector
 
     According to JDK 7, there are GC types. 
@@ -242,7 +245,7 @@ Ex5.java
 
              > java -XX:+UseSerialGC -jar Application.java
 
-
+        // JDK 1.6    
         2. Parallel GC  => -XX:+UseParallelGC
 
             - this uses multiple threads for managing heap space
@@ -258,7 +261,7 @@ Ex5.java
 
             > java -XX:+UseParallelGC -jar Application.java
 
-
+         // JDK 1.7
         3. Concurrent Mark & Sweep GC  (or "CMS") => -XX:+UseConcMarkSweepGC
 
             - applications using this type of GC respond slower on average
@@ -266,6 +269,7 @@ Ex5.java
 
               > java -XX:+UseParNewGC -jar Application.java  
 
+        // JDK 1.9
         4. Garbage First (G1) GC => -XX:+UseG1GC      
 
              > java -XX:+UseG1GC -jar Application.java
@@ -284,8 +288,6 @@ Ex5.java
 JVM-gc-tuning.pdf
 
 
-
-
 To diagnose any memory problems, the Garbage Collection log file is the best place to start. It provides several interesting statistics:
 
 When the scavenge (or Young generation) GC ran?
@@ -299,7 +301,6 @@ How many objects were promoted to old generation?
 
 
 How to Generate GC Log File?
-
 
 -XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xloggc:<file-path>
 

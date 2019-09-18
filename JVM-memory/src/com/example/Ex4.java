@@ -6,18 +6,19 @@ import java.util.List;
 //import java.util.Optional; //  JDK 1.8
 import java.util.UUID;
 
+// request-data
 class TxrRequest {
 
 	private int id;
 	private String fromAccNumber;
 	private String toAccNumber;
-	private double balance;
+	private double amount;
 
-	public TxrRequest(String fromAccNumber, String toAccNumber, double balance) {
+	public TxrRequest(String fromAccNumber, String toAccNumber, double amount) {
 		super();
 		this.fromAccNumber = fromAccNumber;
 		this.toAccNumber = toAccNumber;
-		this.balance = balance;
+		this.amount = amount;
 	}
 
 	public int getId() {
@@ -32,10 +33,6 @@ class TxrRequest {
 		return toAccNumber;
 	}
 
-	public double getBalance() {
-		return balance;
-	}
-
 	public void setId(int id) {
 		this.id = id;
 	}
@@ -48,15 +45,20 @@ class TxrRequest {
 		this.toAccNumber = toAccNumber;
 	}
 
-	public void setBalance(double balance) {
-		this.balance = balance;
+	public double getAmount() {
+		return amount;
+	}
+
+	public void setAmount(double amount) {
+		this.amount = amount;
 	}
 
 }
 
 class TxrRequestQueue {
 
-	private List<TxrRequest> requests = new ArrayList<TxrRequest>();
+	private List<TxrRequest> requests = new ArrayList<TxrRequest>(); //
+
 	private int nextAvaialbleId = 0;
 	private int lastProcessedId = -1;
 
@@ -72,19 +74,27 @@ class TxrRequestQueue {
 
 	public TxrRequest getNextTxrRequest() {
 
-		if (lastProcessedId + 1 > nextAvaialbleId) {
-			lastProcessedId++;
-			return requests.remove(lastProcessedId);
-		} else
-			return null;
+		// bad code
+//
+		synchronized (this) {
+			if (lastProcessedId + 1 > nextAvaialbleId) {
+				lastProcessedId++;
+				return requests.get(lastProcessedId);
+			} else
+				return null;
+		}
 
-//		if (requests.size() > 0) {
-//			synchronized (requests) {
-//				return Optional.of(requests.remove(0));
+		// good code
+
+//		synchronized (this) {
+//			if (requests.size() > 0) {
+//				return requests.remove(0);
+//			} else {
+//				return null;
 //			}
-//		} else
-//			return Optional.empty();
+//		}
 
+		
 	}
 
 	public void printSummary() {
@@ -94,11 +104,11 @@ class TxrRequestQueue {
 
 }
 
-class GenerateTxrRequest implements Runnable {
+class GenerateTxrRequestTask implements Runnable {
 
 	private TxrRequestQueue txrRequestQueue;
 
-	public GenerateTxrRequest(TxrRequestQueue txrRequestQueue) {
+	public GenerateTxrRequestTask(TxrRequestQueue txrRequestQueue) {
 		super();
 		this.txrRequestQueue = txrRequestQueue;
 	}
@@ -121,11 +131,11 @@ class GenerateTxrRequest implements Runnable {
 
 }
 
-class ProcessTxrRequest implements Runnable {
+class ProcessTxrRequestTask implements Runnable {
 
 	private TxrRequestQueue txrRequestQueue;
 
-	public ProcessTxrRequest(TxrRequestQueue txrRequestQueue) {
+	public ProcessTxrRequestTask(TxrRequestQueue txrRequestQueue) {
 		super();
 		this.txrRequestQueue = txrRequestQueue;
 	}
@@ -133,9 +143,8 @@ class ProcessTxrRequest implements Runnable {
 	@Override
 	public void run() {
 		while (true) {
-
 			TxrRequest request = txrRequestQueue.getNextTxrRequest();
-			if (request!=null) {
+			if (request == null) {
 				// no customers in queue so pause for half a second
 				try {
 					Thread.sleep(50);
@@ -156,14 +165,15 @@ public class Ex4 {
 	public static void main(String[] args) {
 
 		TxrRequestQueue txrRequestQueue = new TxrRequestQueue();
-		GenerateTxrRequest generateTxrRequest = new GenerateTxrRequest(txrRequestQueue);
-		ProcessTxrRequest processTxrRequest = new ProcessTxrRequest(txrRequestQueue);
+		GenerateTxrRequestTask generateTxrRequestTask = new GenerateTxrRequestTask(txrRequestQueue);
+		ProcessTxrRequestTask processTxrRequestTask = new ProcessTxrRequestTask(txrRequestQueue);
 
 		for (int user = 0; user < 10; user++) {
-			Thread t = new Thread(generateTxrRequest);
+			Thread t = new Thread(generateTxrRequestTask);
 			t.start();
 		}
-		Thread t = new Thread(processTxrRequest);
+
+		Thread t = new Thread(processTxrRequestTask);
 		t.start();
 
 		// main thread is now acting as the monitoring thread

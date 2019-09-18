@@ -12,6 +12,7 @@ There are four main garbage collectors available in current JVMs:
 
     the serial collector (used for single-CPU machines), 
     the throughput (parallel) collector, 
+    
     the concurrent (CMS) collector, 
     and the G1 collector. 
 
