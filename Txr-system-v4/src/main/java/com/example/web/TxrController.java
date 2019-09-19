@@ -10,13 +10,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.service.AccountBalanceException;
+import com.example.service.TxrRequestQueue;
 import com.example.service.TxrService;
 
 @Controller
 public class TxrController {
 
 	@Autowired
-	private TxrService txrService;
+	private TxrRequestQueue txRequestQueue;
 
 	@GetMapping("/txr")
 	public String txrForm() {
@@ -24,16 +25,16 @@ public class TxrController {
 	}
 
 	@PostMapping("/txr")
-	public String txrForm(@ModelAttribute TxrRequest request, Model model) {
+	public String txr(@ModelAttribute TxrRequest request, Model model) {
+		
+		txRequestQueue.addTxrRequest(request);
+		
 		TxrResponse response = new TxrResponse();
-		try {
-			boolean b = txrService.txr(request.getAmount(), request.getFromAccNum(), request.getToAccNum());
-			response.setStatus(b ? "Txr success" : "Txr failed");
-		} catch (Exception e) {
-			response.setStatus(e.getMessage());
-		}
+		response.setStatus("Txr initiated successfully");
 		model.addAttribute("response", response);
+
 		return "txr-form";
+
 	}
 
 }

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.service.TxrService;
 
-//@RestController
+@RestController
 public class RestTxrController {
 
 	@Autowired
