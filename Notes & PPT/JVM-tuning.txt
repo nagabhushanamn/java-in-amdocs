@@ -241,12 +241,17 @@ Working with the JIT Compiler
     - compiled language    ( C++ & Fortran )
     - interpreted language ( PHP & Perl )
 
-- Programs written in interpreted languages are portable but it might run slowly
+- Programs written in interpreted languages are portable 
+  but it might run slowly
 
-- interpreted code will almost always be measurably slower than compiled code
+- interpreted code will almost always be measurably slower 
+  than compiled code
 
-- compilers have enough information about the program to provide a number of optimizations
+- compilers have enough information about the program 
+  to provide a number of optimizations
   to the binary code that an interpreter simply cannot perform
+
+
 
 
 

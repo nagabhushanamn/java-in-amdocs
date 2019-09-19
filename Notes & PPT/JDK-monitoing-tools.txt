@@ -160,9 +160,11 @@ using JFR
     during the execution of a Java application
 
 
-    JFR is designed to affect the performance of a running application as little as possible.
+    JFR is designed to affect the performance of a running application 
+    as little as possible.
 
-    In order to use JFR, we should activate it. We may achieve this in two ways:
+    In order to use JFR, 
+    we should activate it. We may achieve this in two ways:
 
     when starting a Java application
     passing diagnostic commands of the jcmd tool when a Java application is already running
