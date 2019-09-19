@@ -14,7 +14,7 @@ public class TxrRequestQueue {
 	private List<TxrRequest> requests = new ArrayList<TxrRequest>(); //
 
 	private volatile int nextAvaialbleId = 0;
-//	private int lastProcessedId = -1;
+	private int lastProcessedId = 0;
 
 	public synchronized void addTxrRequest(TxrRequest request) {
 		request.setId(nextAvaialbleId);
@@ -23,14 +23,19 @@ public class TxrRequestQueue {
 	}
 
 	public synchronized TxrRequest getNextTxrRequest() {
-//		if (lastProcessedId + 1 > nextAvaialbleId) {
-//			lastProcessedId++;
-//			return requests.get(lastProcessedId);
-//		} else
+//		if (requests.size() > 0) {
+//			if (lastProcessedId < requests.size()) {
+//				TxrRequest request = requests.get(lastProcessedId);
+//				lastProcessedId++;
+//				return request;
+//			} else
+//				return null;
+//		} else {
 //			return null;
+//		}
 
 		if (requests.size() > 0) {
-			return requests.get(0);
+			return requests.remove(0);
 		} else {
 			return null;
 		}
