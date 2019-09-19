@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.service.TxrRequestQueue;
 import com.example.service.TxrService;
 
 @RestController
@@ -20,12 +21,18 @@ public class RestTxrController {
 	@Autowired
 	private TxrService txrService;
 
+	@Autowired
+	private TxrRequestQueue txRequestQueue;
+
 	@RequestMapping(value = "/api/txr", consumes = { "application/json" }, produces = { "application/json" })
 	public @ResponseBody TxrResponse txrForm(@RequestBody TxrRequest request, Model model) {
-		txrService.txr(request.getAmount(), request.getFromAccNum(), request.getToAccNum());
+
+		txRequestQueue.addTxrRequest(request);
+
 		TxrResponse response = new TxrResponse();
-		response.setStatus("Txr success");
+		response.setStatus("Txr initiated successfully");
 		return response;
+
 	}
 
 }

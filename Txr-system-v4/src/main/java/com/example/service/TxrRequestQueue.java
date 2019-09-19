@@ -30,7 +30,7 @@ public class TxrRequestQueue {
 //			return null;
 
 		if (requests.size() > 0) {
-			return requests.remove(0);
+			return requests.get(0);
 		} else {
 			return null;
 		}
