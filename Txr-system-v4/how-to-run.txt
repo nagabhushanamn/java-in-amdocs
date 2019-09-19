@@ -1,0 +1,14 @@
+
+
+application terminal 1
+--------------------------
+java - jar txr-system-0.0.1-SNAPSHOT.jar
+
+
+jemeter terminal 2
+------------------
+
+sudo ./jmeter.sh -n -t jmeter-txr-system.jmx -l jmeter-txr-system.jtl -Jthreads=2000 -Jduration=20
+sudo ./jmeter.sh -g jmeter-txr-system.jtl -o txr-system-html-report
+
+
